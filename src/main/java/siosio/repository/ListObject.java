@@ -12,5 +12,8 @@ public interface ListObject extends DomElement, NamedElement {
 
     @SubTagList("component")
     List<ListComponent> getComponent();
+    
+    @SubTagList("component-ref")
+    List<ListComponentRef> getComponentRef();
 
 }

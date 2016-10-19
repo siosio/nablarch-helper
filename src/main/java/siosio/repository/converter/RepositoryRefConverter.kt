@@ -24,7 +24,7 @@ class RepositoryRefConverter : Converter<XmlTag>(), CustomReferenceConverter<Xml
     if (value.isNullOrEmpty()) {
       return emptyArray()
     }
-    return arrayOf(MyReference(element!!, component, context), MyReference(element!!, component, context))
+    return arrayOf(PropertyRefReference(element!!, component, context), PropertyRefReference(element, component, context))
   }
 
   override fun toString(component: XmlTag?, context: ConvertContext?): String? {
@@ -43,7 +43,8 @@ class RepositoryRefConverter : Converter<XmlTag>(), CustomReferenceConverter<Xml
   }
 }
 
-class MyReference(private val psiElement: PsiElement, val component: GenericDomValue<XmlTag>?, private val context: ConvertContext?) : PsiReferenceBase<PsiElement>(psiElement) {
+class PropertyRefReference(psiElement: PsiElement, val component: GenericDomValue<XmlTag>?, private val context: ConvertContext?) :
+    PsiReferenceBase<PsiElement>(psiElement) {
 
   override fun getVariants(): Array<out Any> {
     if (element !is XmlAttributeValue) {
