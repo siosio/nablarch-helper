@@ -1,11 +1,9 @@
 package siosio.repository
 
-import com.intellij.psi.PsiClass
-import com.intellij.psi.PsiManager
-import com.intellij.psi.PsiType
-import com.intellij.psi.search.FilenameIndex
-import com.intellij.psi.search.GlobalSearchScope
-import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.openapi.project.*
+import com.intellij.psi.*
+import com.intellij.psi.search.*
+import com.intellij.psi.util.*
 import com.intellij.psi.xml.XmlElement
 import com.intellij.psi.xml.XmlFile
 import com.intellij.psi.xml.XmlTag
@@ -84,3 +82,11 @@ internal fun findNamedElement(context: ConvertContext?): List<NamedElement> {
         }.toList()
   } ?: emptyList()
 }
+
+internal fun createHandlerInterfaceType(project: Project): PsiType? {
+  val psiClass = JavaPsiFacade.getInstance(project).findClasses("nablarch.fw.Handler", GlobalSearchScope.allScope(project))
+  return psiClass.firstOrNull()?.let {
+    PsiTypesUtil.getClassType(it)
+  } ?: null
+}
+

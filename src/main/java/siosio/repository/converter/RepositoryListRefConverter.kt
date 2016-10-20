@@ -3,7 +3,6 @@ package siosio.repository.converter
 import com.intellij.codeInsight.lookup.*
 import com.intellij.psi.*
 import com.intellij.psi.impl.source.*
-import com.intellij.psi.search.*
 import com.intellij.psi.util.*
 import com.intellij.psi.xml.*
 import com.intellij.util.xml.*
@@ -56,13 +55,10 @@ class ListComponentRefReference(psiElement: PsiElement, val component: GenericDo
         return PsiReference.EMPTY_ARRAY
       }
 
-      val type = if (DomUtil.getParentOfType(domElement, ListObject::class.java, true)?.name?.value == "handlerQueue") {
-        val psiClass = JavaPsiFacade.getInstance(element.project).findClasses("nablarch.fw.Handler", GlobalSearchScope.allScope(element.project))
-        psiClass.firstOrNull()?.let {
-          PsiTypesUtil.getClassType(it)
-        } ?: null
+      val type = if (domElement.getParentOfType(ListObject::class.java, true)?.name?.value == "handlerQueue") {
+        createHandlerInterfaceType(element.project)
       } else {
-        DomUtil.getParentOfType(domElement, Property::class.java, true)?.let {
+        domElement.getParentOfType(Property::class.java, true)?.let {
           val parameterList = it.name.value?.parameterList
           if (parameterList?.parametersCount == 1) {
             val type = parameterList!!.parameters[0]?.type
