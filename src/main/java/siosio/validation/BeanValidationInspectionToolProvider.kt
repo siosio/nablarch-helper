@@ -5,9 +5,7 @@ import com.intellij.codeInspection.BaseJavaLocalInspectionTool
 import com.intellij.codeInspection.InspectionToolProvider
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
-import com.intellij.psi.JavaElementVisitor
-import com.intellij.psi.PsiElementVisitor
-import com.intellij.psi.PsiMethod
+import com.intellij.psi.*
 
 /**
  * ドメイン名の存在チェックを行うインスペクション
@@ -26,22 +24,30 @@ class BeanValidationInspectionToolProvider : InspectionToolProvider {
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
       return object: JavaElementVisitor() {
+        override fun visitField(field: PsiField?) {
+          super.visitField(field ?: return)
+          verifyDomainName(field)
+        }
+
         override fun visitMethod(method: PsiMethod?) {
           super.visitMethod(method ?: return)
+          verifyDomainName(method)
+        }
 
-          val project = method.project
-          val module = getModule(method) ?: return
+        private fun verifyDomainName(element: PsiModifierListOwner) {
+          val module = getModule(element) ?: return
+          val project = element.project
 
-          AnnotationUtil.findAnnotation(method, "nablarch.core.validation.ee.Domain")?.let {
+          AnnotationUtil.findAnnotation(element, "nablarch.core.validation.ee.Domain")?.let {
             val domainName = AnnotationUtil.getStringAttributeValue(it, "value")
             if (domainName.isNullOrEmpty()) {
               holder.registerProblem(it, "ドメイン名が指定されていません。", ProblemHighlightType.ERROR)
             } else {
-              if (findDomainField(project, module, domainName!!) == null) {
-                holder.registerProblem(it, "ドメインがDomainBeanに存在しません。", ProblemHighlightType.ERROR)
-              }
+              findDomainField(project, module, domainName!!) ?:
+                  holder.registerProblem(it, "ドメインがDomainBeanに存在しません。", ProblemHighlightType.ERROR)
             }
           }
+
         }
       }
     }

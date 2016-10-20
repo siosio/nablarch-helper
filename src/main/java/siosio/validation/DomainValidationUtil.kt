@@ -58,7 +58,7 @@ fun findDomainField(project: Project, module: Module, field: String): PsiField? 
 fun getDomainBeanClasses(project: Project, module: Module): List<PsiClass> {
   return findDomainManagerClass(project, module)?.let {
     return ClassInheritorsSearch.search(
-        it, createModuleSearchScope(module), true, false, true).toList()
+        it, createModuleSearchScope(module), true, true, true).toList()
   } ?: emptyList()
 }
 

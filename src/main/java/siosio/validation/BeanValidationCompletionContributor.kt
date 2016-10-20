@@ -1,12 +1,8 @@
 package siosio.validation
 
-import com.intellij.codeInsight.completion.CompletionContributor
-import com.intellij.codeInsight.completion.CompletionParameters
-import com.intellij.codeInsight.completion.CompletionProvider
-import com.intellij.codeInsight.completion.CompletionResultSet
-import com.intellij.codeInsight.completion.CompletionType
-import com.intellij.codeInsight.lookup.LookupElementBuilder
-import com.intellij.util.ProcessingContext
+import com.intellij.codeInsight.completion.*
+import com.intellij.codeInsight.lookup.*
+import com.intellij.util.*
 
 class BeanValidationCompletionContributor : CompletionContributor() {
 
@@ -17,16 +13,19 @@ class BeanValidationCompletionContributor : CompletionContributor() {
   class DomainNameCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, p1: ProcessingContext?, resultSet: CompletionResultSet) {
       val originalPosition = parameters.originalPosition
+      
       originalPosition?.let {
-        val project = it.project
         val module = getModule(it) ?: return
-        getAllDomainFields(project, module).forEach {
-          resultSet.addElement(
+        val project = it.project
+
+        resultSet.addAllElements(
+            getAllDomainFields(project, module).map {
               LookupElementBuilder.create(it, it.nameIdentifier.text)
-                  .withIcon(it.getIcon(0)))
-        }
+                  .withIcon(it.getIcon(0))
+            }
+        )
+        resultSet.stopHere()
       }
-      resultSet.stopHere()
     }
   }
 }
