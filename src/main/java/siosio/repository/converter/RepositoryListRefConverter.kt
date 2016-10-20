@@ -55,7 +55,7 @@ class ListComponentRefReference(psiElement: PsiElement, val component: GenericDo
         return PsiReference.EMPTY_ARRAY
       }
 
-      val type = if (domElement.getParentOfType(ListObject::class.java, true)?.name?.value == "handlerQueue") {
+      val type = if (isHandlerQueue(domElement)) {
         createHandlerInterfaceType(element.project)
       } else {
         domElement.getParentOfType(Property::class.java, true)?.let {

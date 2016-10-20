@@ -7,8 +7,7 @@ import com.intellij.psi.util.*
 import com.intellij.psi.xml.XmlElement
 import com.intellij.psi.xml.XmlFile
 import com.intellij.psi.xml.XmlTag
-import com.intellij.util.xml.ConvertContext
-import com.intellij.util.xml.DomUtil
+import com.intellij.util.xml.*
 
 /**
  * このXML要素の親タグを辿って、タグ名が**component**のタグを探す。
@@ -95,3 +94,12 @@ internal fun createHandlerInterfaceType(project: Project): PsiType? {
   } ?: null
 }
 
+internal fun isHandlerQueue(domElement: DomElement):Boolean {
+
+  return if (domElement.getParentOfType(ListObject::class.java, true)?.name?.value == "handlerQueue") {
+    true
+  } else {
+    val property = domElement.getParentOfType(Property::class.java, true)
+    DomUtil.getValueElement(property?.name)?.text == "\"handlerQueue\""
+  }
+}
