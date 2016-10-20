@@ -56,31 +56,36 @@ internal fun findComponentClass(element: XmlElement): PsiClass? {
  * 名前付きタグを抽出する。
  */
 internal fun findNamedElement(context: ConvertContext?): List<NamedElement> {
-  return context?.let {
-    val module = it.module
-    val contains = GlobalSearchScope.moduleRuntimeScope(module!!, false).contains(context.file.originalFile.virtualFile)
+  if (context == null) {
+    return emptyList()
+  }
 
-    FilenameIndex.getAllFilesByExt(it.project, "xml", module.getModuleRuntimeScope(!contains))
-        .map {
-          val file = PsiManager.getInstance(context.project).findFile(it)
-          // コンポーネント定義ファイル内のcomponent要素とlist要素を探す
-          if (file is XmlFile) {
+  val module = context.module
+  val contains = GlobalSearchScope.moduleRuntimeScope(module!!, false).contains(context.file.originalFile.virtualFile)
+
+  return FilenameIndex.getAllFilesByExt(context.project, "xml", module.getModuleRuntimeScope(!contains))
+      .asSequence()
+      .map {
+        val file = PsiManager.getInstance(context.project).findFile(it)
+
+        // コンポーネント定義ファイル内のcomponent要素とlist要素を探す
+        when (file) {
+          is XmlFile -> {
             val domElement = DomUtil.getDomElement(file.rootTag)
             if (domElement is ComponentDefinition) {
               (domElement.components + domElement.lists)
             } else {
-              listOf<NamedElement>()
+              null
             }
-          } else {
-            listOf<NamedElement>()
           }
-        }.asSequence()
-        .flatten()
-        .filter {
-          // name属性に値が設定されている要素だけにする
-          !it.name.value.isNullOrBlank()
-        }.toList()
-  } ?: emptyList()
+          else -> null
+        } ?: emptyList()
+      }
+      .flatten()
+      .filter {
+        // name属性に値が設定されている要素だけにする
+        !it.name.value.isNullOrBlank()
+      }.toList()
 }
 
 internal fun createHandlerInterfaceType(project: Project): PsiType? {
