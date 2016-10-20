@@ -1,4 +1,4 @@
-Nablarch(https://github.com/nablarch)の開発を少しサポートするIntelliJ IDEA用のプラグイン
+Nablarch( https://github.com/nablarch ) の開発を少しサポートするIntelliJ IDEA用のプラグイン
 
 # Bean Validationサポート
 ドメインバリデーション使用時に、ドメイン名を補完することができます。
