@@ -5,7 +5,6 @@ import com.intellij.psi.impl.source.*
 import com.intellij.psi.impl.source.resolve.reference.impl.providers.*
 import com.intellij.psi.util.*
 import com.intellij.util.xml.*
-import com.intellij.xml.util.*
 import siosio.repository.*
 
 class ListPsiClassConverter : RepositoryPsiClassConverter() {
@@ -19,10 +18,9 @@ class ListPsiClassConverter : RepositoryPsiClassConverter() {
       val parameters = property.name.value?.parameterList?.parameters
       parameters?.firstOrNull()?.let { parameter ->
         val type = parameter.type
-        if (type is PsiClassReferenceType) {
-          type.reference.typeParameters.firstOrNull()
-        } else {
-          null
+        when(type) {
+          is PsiClassReferenceType -> type.reference.typeParameters.firstOrNull()
+          else -> null
         }
       }
     } ?: run {

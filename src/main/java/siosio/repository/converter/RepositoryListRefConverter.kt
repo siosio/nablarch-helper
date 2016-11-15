@@ -15,7 +15,7 @@ class RepositoryListRefConverter : Converter<XmlTag>(), CustomReferenceConverter
     if (value.isNullOrEmpty()) {
       return emptyArray()
     }
-    return arrayOf(ListComponentRefReference(element!!, component, context), PropertyRefReference(element, component, context))
+    return arrayOf(ListComponentRefReference(element!!, component, context))
   }
 
   override fun toString(component: XmlTag?, context: ConvertContext?): String? {
@@ -25,9 +25,7 @@ class RepositoryListRefConverter : Converter<XmlTag>(), CustomReferenceConverter
   override fun fromString(name: String?, context: ConvertContext?): XmlTag? {
     return findNamedElement(context).lastOrNull {
       it.name.value == name
-    }?.let {
-      it.xmlTag
-    } ?: null
+    }?.xmlTag
   }
 }
 
@@ -43,17 +41,14 @@ class ListComponentRefReference(psiElement: PsiElement, val component: GenericDo
       if (namedElement is Component) {
         namedElement.componentClass.value?.let {
           Triple(namedElement, PsiTypesUtil.getClassType(it), it)
-        } ?: null
+        }
       } else {
         null
       }
     }
 
     return PsiTreeUtil.getParentOfType(element, XmlTag::class.java)?.let {
-      val domElement = DomUtil.getDomElement(it)
-      if (domElement !is ListComponentRef) {
-        return PsiReference.EMPTY_ARRAY
-      }
+      val domElement = DomUtil.getDomElement(it) as? ListComponentRef ?: return PsiReference.EMPTY_ARRAY
 
       val type = if (isHandlerQueue(domElement)) {
         createHandlerInterfaceType(element.project)

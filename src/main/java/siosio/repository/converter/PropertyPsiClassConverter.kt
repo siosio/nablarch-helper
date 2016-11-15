@@ -24,9 +24,7 @@ class PropertyPsiClassConverter : RepositoryPsiClassConverter() {
       } else {
         null
       }
-    }?.let { property ->
-      property.name.value
-    }?.let { setter ->
+    }?.name?.value?.let { setter ->
       val parameters = setter.parameterList.parameters
       if (parameters.isNotEmpty()) {
         val parameter = parameters[0]
