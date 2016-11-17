@@ -13,7 +13,7 @@ import com.intellij.util.ProcessingContext
 
 class BeanValidationJavaReflectionReferenceContributor : PsiReferenceContributor() {
   override fun registerReferenceProviders(registrar: PsiReferenceRegistrar) {
-    registrar.registerReferenceProvider(REFERENCE_PATTERN, DomainReferenceProvider());
+    registrar.registerReferenceProvider(REFERENCE_PATTERN, DomainReferenceProvider())
   }
 
   class DomainReferenceProvider : PsiReferenceProvider() {
@@ -38,10 +38,7 @@ class BeanValidationJavaReflectionReferenceContributor : PsiReferenceContributor
     }
   }
 
-  /**
-   * リファレンス実装
-   */
-  class MyReference(private val domainLiteral: PsiElement,
+  class MyReference(domainLiteral: PsiElement,
                     private val field: PsiField?) : PsiReferenceBase<PsiElement>(domainLiteral) {
 
     override fun getVariants(): Array<out Any> {

@@ -2,13 +2,12 @@ package siosio.repository;
 
 import java.util.List;
 
-import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.SubTagList;
 
 /**
  * listタグ
  */
-public interface ListObject extends DomElement, NamedElement {
+public interface ListObject extends NamedElement {
 
     @SubTagList("component")
     List<ListComponent> getComponent();

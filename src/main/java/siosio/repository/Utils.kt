@@ -35,7 +35,7 @@ internal fun isAssignableFrom(left: PsiType, right: PsiType?): Boolean {
     if (left.isAssignableFrom(right)) {
       true
     } else {
-      right.superTypes.firstOrNull() {
+      right.superTypes.firstOrNull {
         isAssignableFrom(left, it)
       } != null
     }
@@ -46,9 +46,7 @@ internal fun isAssignableFrom(left: PsiType, right: PsiType?): Boolean {
  * この要素が設定されているクラス([PsiClass])を取得する。
  */
 internal fun findComponentClass(element: XmlElement): PsiClass? {
-  return findComponent(element)?.let {
-    it.componentClass.value
-  } ?: null
+  return findComponent(element)?.componentClass?.value
 }
 
 /**
@@ -91,7 +89,7 @@ internal fun createHandlerInterfaceType(project: Project): PsiType? {
   val psiClass = JavaPsiFacade.getInstance(project).findClasses("nablarch.fw.Handler", GlobalSearchScope.allScope(project))
   return psiClass.firstOrNull()?.let {
     PsiTypesUtil.getClassType(it)
-  } ?: null
+  }
 }
 
 internal fun isHandlerQueue(domElement: DomElement):Boolean {

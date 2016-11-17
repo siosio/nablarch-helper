@@ -1,6 +1,6 @@
 package siosio.repository.converter
 
-import com.intellij.codeInsight.lookup.LookupElementBuilder
+import com.intellij.codeInsight.lookup.*
 import com.intellij.psi.*
 import com.intellij.psi.util.PropertyUtil
 import com.intellij.psi.util.PsiFormatUtil
@@ -23,7 +23,7 @@ class RepositoryPsiMethodConverter : Converter<PsiMethod>(), CustomReferenceConv
   }
 
   override fun toString(method: PsiMethod?, context: ConvertContext?): String? {
-    return method?.name;
+    return method?.name
   }
 
   override fun fromString(method: String?, context: ConvertContext?): PsiMethod? {
@@ -32,10 +32,10 @@ class RepositoryPsiMethodConverter : Converter<PsiMethod>(), CustomReferenceConv
     }
     return findComponentClass(context!!.xmlElement!!)?.let {
       PropertyUtil.findPropertySetter(it, method, false, true)
-    } ?: null
+    }
   }
 
-  class MyReference(private val psiElement: PsiElement, val propertyName: GenericDomValue<PsiMethod>?) : PsiReferenceBase<PsiElement>(psiElement) {
+  class MyReference(psiElement: PsiElement, val propertyName: GenericDomValue<PsiMethod>?) : PsiReferenceBase<PsiElement>(psiElement) {
 
     override fun handleElementRename(newElementName: String): PsiElement? {
       return super.handleElementRename(PropertyUtil.getPropertyName(newElementName))
@@ -60,7 +60,7 @@ class RepositoryPsiMethodConverter : Converter<PsiMethod>(), CustomReferenceConv
         it.name.value
       }?.filterNotNull() ?: emptyList()
 
-      return findComponentClass(element as XmlAttributeValue)?.let {
+      val lookupElements = findComponentClass(element as XmlAttributeValue)?.let {
         PropertyUtil.getAllProperties(it, true, false, true)
       }?.asSequence()?.filterNot { props ->
         // propertyタグで未定義のプロパティだけを対象にする。
@@ -68,12 +68,13 @@ class RepositoryPsiMethodConverter : Converter<PsiMethod>(), CustomReferenceConv
       }?.map { method ->
         createLookupElementBuilder(method.value)
       }?.toList()?.toTypedArray() ?: emptyArray()
+      return lookupElements
     }
 
     /**
-     * 候補リストに表示するための[LookupElementBuilder]を構築する
+     * 候補リストに表示するための[LookupElement]を構築する
      */
-    private fun createLookupElementBuilder(method: PsiMethod): LookupElementBuilder {
+    private fun createLookupElementBuilder(method: PsiMethod): LookupElement {
       val tail = PsiFormatUtil.formatMethod(method,
           PsiSubstitutor.EMPTY,
           PsiFormatUtilBase.SHOW_PARAMETERS,
@@ -83,6 +84,7 @@ class RepositoryPsiMethodConverter : Converter<PsiMethod>(), CustomReferenceConv
           .withIcon(method.getIcon(0))
           .withStrikeoutness(method.isDeprecated)
           .withTailText(tail)
+          .withAutoCompletionPolicy(AutoCompletionPolicy.ALWAYS_AUTOCOMPLETE)
     }
 
     override fun resolve(): PsiElement? {

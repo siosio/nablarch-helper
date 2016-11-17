@@ -5,7 +5,6 @@ import java.util.List;
 import com.intellij.psi.PsiClass;
 import com.intellij.util.xml.Attribute;
 import com.intellij.util.xml.Convert;
-import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;
 import com.intellij.util.xml.SubTagList;
 import org.jetbrains.annotations.NotNull;
@@ -14,7 +13,7 @@ import siosio.repository.converter.RepositoryPsiClassConverter;
 /**
  * componentタグ
  */
-public interface Component extends DomElement, NamedElement {
+public interface Component extends NamedElement {
 
     @NotNull
     @Attribute("class")

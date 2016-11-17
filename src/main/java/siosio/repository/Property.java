@@ -1,6 +1,7 @@
 package siosio.repository;
 
 import com.intellij.psi.PsiMethod;
+import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.xml.Attribute;
 import com.intellij.util.xml.Convert;
 import com.intellij.util.xml.DomElement;
@@ -22,7 +23,7 @@ public interface Property extends DomElement {
 
     @Attribute("ref")
     @Convert(RepositoryRefConverter.class)
-    GenericAttributeValue<Component> getRef();
+    GenericAttributeValue<XmlTag> getRef();
 
     @SubTag("component")
     PropertyComponent getComponent();

@@ -28,11 +28,11 @@ const private val NABLARCH_DOMAIN_MANAGER_CLASS_NAME = "nablarch.core.validation
 /** Domainアノテーションが設定されている要素を抽出するパターン */
 val PATTERN = psiElement(PsiJavaToken::class.java)
     .withSuperParent(4, psiElement(PsiAnnotation::class.java)
-        .withChild(psiElement(PsiJavaCodeReferenceElement::class.java).withText("Domain")))
+        .withChild(psiElement(PsiJavaCodeReferenceElement::class.java).withText("Domain")))!!
 
 val REFERENCE_PATTERN = psiLiteral()
     .withSuperParent(3, psiElement(PsiAnnotation::class.java)
-        .withChild(psiElement(PsiJavaCodeReferenceElement::class.java).withText("Domain")))
+        .withChild(psiElement(PsiJavaCodeReferenceElement::class.java).withText("Domain")))!!
 
 fun getAllDomainFields(project: Project, module: Module): List<PsiField> {
   return getDomainBeanClasses(project, module).map {
@@ -50,7 +50,7 @@ fun getAllDomainFields(project: Project, module: Module): List<PsiField> {
 }
 
 fun findDomainField(project: Project, module: Module, field: String): PsiField? {
-  return getAllDomainFields(project, module).firstOrNull() {
+  return getAllDomainFields(project, module).firstOrNull {
     it.name == field
   }
 }
