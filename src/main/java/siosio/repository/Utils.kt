@@ -98,6 +98,8 @@ internal fun isHandlerQueue(domElement: DomElement):Boolean {
     true
   } else {
     val property = domElement.getParentOfType(Property::class.java, true)
-    DomUtil.getValueElement(property?.name)?.text == "\"handlerQueue\""
+    property?.name?.let {
+      DomUtil.getValueElement(it)?.text == "\"handlerQueue\""
+    } ?: false
   }
 }
