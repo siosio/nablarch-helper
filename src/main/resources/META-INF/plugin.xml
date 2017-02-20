@@ -1,7 +1,7 @@
-<idea-plugin version="2">
+<idea-plugin>
   <id>siosio.nablarch-helper</id>
   <name>nablarch helper</name>
-  <version>0.5</version>
+  <version>0.6</version>
   <vendor email="siosio12@gmail.com">siosio</vendor>
 
   <description><![CDATA[
@@ -21,14 +21,13 @@
 
   <extensions defaultExtensionNs="com.intellij">
     <!-- Bean Validation -->
-    <completion.contributor order="first" implementationClass="siosio.validation.BeanValidationCompletionContributor" language="JAVA" />
-    <psi.referenceContributor order="first" language="JAVA" implementation="siosio.validation.BeanValidationJavaReflectionReferenceContributor"/>
-
+    <psi.referenceContributor implementation="siosio.validation.DomainNameReferenceContributor" language="JAVA" order="first"/>
     <inspectionToolProvider implementation="siosio.validation.BeanValidationInspectionToolProvider" order="first"/>
 
     <!-- SystemRepository -->
     <dom.fileDescription implementation="siosio.repository.ComponentDefinitionDomDescription" />
     <inspectionToolProvider implementation="siosio.repository.inspection.ComponentDefinitionInspectionToolProvider" />
+
   </extensions>
 
   <actions>

@@ -22,8 +22,7 @@ apply plugin: "kotlin"
 
 intellij {
   pluginName 'nablarch-helper'
-  version = "IU-2016.2"
-  plugins = ['DatabaseTools']
+  version = "IU-2016.3"
   updateSinceUntilBuild = false
 }
 
