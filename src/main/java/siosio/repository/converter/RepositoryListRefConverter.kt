@@ -56,7 +56,7 @@ class ListComponentRefReference(psiElement: PsiElement, val component: GenericDo
         domElement.getParentOfType(Property::class.java, true)?.let {
           val parameterList = it.name.value?.parameterList
           if (parameterList?.parametersCount == 1) {
-            val type = parameterList!!.parameters[0]?.type
+            val type = parameterList.parameters[0]?.type
             // todo ちょっとここ雑かな。。
             if (type is PsiClassReferenceType) {
               type.parameters.firstOrNull()

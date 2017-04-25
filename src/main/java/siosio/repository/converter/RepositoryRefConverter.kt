@@ -15,7 +15,7 @@ class RepositoryRefConverter : ResolvingConverter<XmlTag>() {
   override fun getVariants(context: ConvertContext?): MutableCollection<out XmlTag> {
     val element = context?.referenceXmlElement
     return if (element is XmlAttributeValue) {
-      ComponentCreator(element).findAll(context!!).map { 
+      ComponentCreator(element).findAll(context).map { 
         it.component.xmlTag
       }.toMutableList()
     } else {

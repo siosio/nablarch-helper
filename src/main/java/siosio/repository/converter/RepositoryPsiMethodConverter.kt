@@ -30,7 +30,7 @@ class RepositoryPsiMethodConverter : Converter<PsiMethod>(), CustomReferenceConv
     if (context?.xmlElement !is XmlAttribute || method == null) {
       return null
     }
-    return findComponentClass(context!!.xmlElement!!)?.let {
+    return findComponentClass(context.xmlElement!!)?.let {
       PropertyUtil.findPropertySetter(it, method, false, true)
     }
   }
