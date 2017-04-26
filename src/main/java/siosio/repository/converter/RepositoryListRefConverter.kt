@@ -42,15 +42,16 @@ class ListComponentRefReference(psiElement: PsiElement,
             return emptyArray()
         }
 
-        val namedElements = findNamedElement(context).mapNotNull { namedElement ->
-            if (namedElement is Component) {
-                namedElement.componentClass.value?.let {
-                    Triple(namedElement, PsiTypesUtil.getClassType(it), it)
+        val namedElements = findNamedElement(context)
+            .mapNotNull { namedElement ->
+                if (namedElement is Component) {
+                    namedElement.componentClass.value?.let {
+                        Triple(namedElement, PsiTypesUtil.getClassType(it), it)
+                    }
+                } else {
+                    null
                 }
-            } else {
-                null
             }
-        }
 
         return PsiTreeUtil.getParentOfType(element, XmlTag::class.java)?.let {
             val domElement = DomUtil.getDomElement(it) as? ListComponentRef ?: return PsiReference.EMPTY_ARRAY
@@ -75,6 +76,7 @@ class ListComponentRefReference(psiElement: PsiElement,
                     }
                 }
             }
+
             namedElements.asSequence().filter {
                 type == null || isAssignableFrom(type, it.second)
             }.map {

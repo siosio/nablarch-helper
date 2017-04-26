@@ -9,6 +9,7 @@ import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.util.xml.*
 import siosio.repository.*
+import siosio.repository.extension.*
 
 /**
 
@@ -25,9 +26,7 @@ class PsiFileConverter : Converter<PsiFile>(), CustomReferenceConverter<PsiFile>
         val project = context?.project ?: return null
         val module = context.module ?: return null
 
-        val includeTest = !GlobalSearchScope.moduleRuntimeScope(module, false).contains(context.file.originalFile.virtualFile)
-        val scope = GlobalSearchScope.moduleRuntimeScope(module, includeTest)
-
+        val scope = GlobalSearchScope.moduleRuntimeScope(module, context.file.inTestScope(module))
         return ResourceFileUtil.findResourceFileInScope(s, project, scope)?.let {
             return PsiManager.getInstance(project).findFile(it)
         }
