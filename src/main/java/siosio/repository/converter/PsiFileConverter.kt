@@ -26,7 +26,7 @@ class PsiFileConverter : Converter<PsiFile>(), CustomReferenceConverter<PsiFile>
         val module = context.module ?: return null
 
         val includeTest = !GlobalSearchScope.moduleRuntimeScope(module, false).contains(context.file.originalFile.virtualFile)
-        val scope = GlobalSearchScope.moduleWithDependenciesAndLibrariesScope(module, includeTest)
+        val scope = GlobalSearchScope.moduleRuntimeScope(module, includeTest)
 
         return ResourceFileUtil.findResourceFileInScope(s, project, scope)?.let {
             return PsiManager.getInstance(project).findFile(it)
