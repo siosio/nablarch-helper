@@ -30,4 +30,5 @@ public interface Property extends DomElement {
 
     @SubTag("list")
     ListObject getList();
+
 }

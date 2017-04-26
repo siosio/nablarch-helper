@@ -95,14 +95,3 @@ internal fun createHandlerInterfaceType(project: Project): PsiType? {
     }
 }
 
-internal fun isHandlerQueue(domElement: DomElement): Boolean {
-
-    return if (domElement.getParentOfType(ListObject::class.java, true)?.name?.value == "handlerQueue") {
-        true
-    } else {
-        val property = domElement.getParentOfType(Property::class.java, true)
-        property?.name?.let {
-            DomUtil.getValueElement(it)?.text == "\"handlerQueue\""
-        } ?: false
-    }
-}
