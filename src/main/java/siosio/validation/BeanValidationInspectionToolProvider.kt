@@ -5,6 +5,7 @@ import com.intellij.codeInsight.*
 import com.intellij.codeInsight.daemon.impl.quickfix.*
 import com.intellij.codeInspection.*
 import com.intellij.psi.*
+import siosio.extension.*
 
 /**
  * ドメインに関するチェック
@@ -33,8 +34,8 @@ class BeanValidationInspectionToolProvider : InspectionToolProvider {
                 }
 
                 private fun verifyDomain(field: PsiField) {
-                    val module = getModule(field) ?: return
-                    if (getDomainBeanClasses(field.project, module).contains(field.containingClass ?: return)) {
+                    val module = field.getModule() ?: return
+                    if (DomainManager.getDomainBeanClasses(field.project, module).contains(field.containingClass ?: return)) {
                         if (!field.hasModifierProperty("public")) {
                             holder.registerProblem(field.nameIdentifier, "ドメインはpublicフィールドで定義してください。", ModifierFix(field, "public", true, false))
                         }
@@ -47,7 +48,7 @@ class BeanValidationInspectionToolProvider : InspectionToolProvider {
                 }
 
                 private fun verifyDomainName(element: PsiModifierListOwner) {
-                    val module = getModule(element) ?: return
+                    val module = element.getModule() ?: return
                     val project = element.project
 
                     AnnotationUtil.findAnnotation(element, "nablarch.core.validation.ee.Domain")?.let {
@@ -55,8 +56,9 @@ class BeanValidationInspectionToolProvider : InspectionToolProvider {
                         if (domainName.isNullOrEmpty()) {
                             holder.registerProblem(it, "ドメイン名が指定されていません。")
                         } else {
-                            findDomainField(project, module, domainName!!) ?:
-                            holder.registerProblem(it, "ドメインがDomainBeanに存在しません。")
+                            if (!DomainManager.containsDomain(project, module, domainName!!)) {
+                                holder.registerProblem(it, "ドメインがDomainBeanに存在しません。")
+                            }
                         }
                     }
 

@@ -21,7 +21,6 @@
 
   <extensions defaultExtensionNs="com.intellij">
     <!-- Bean Validation -->
-    <completion.contributor order="first" implementationClass="siosio.validation.BeanValidationCompletionContributor" language="JAVA" />
     <psi.referenceContributor order="first" language="JAVA" implementation="siosio.validation.BeanValidationJavaReflectionReferenceContributor"/>
 
     <inspectionToolProvider implementation="siosio.validation.BeanValidationInspectionToolProvider" order="first"/>
