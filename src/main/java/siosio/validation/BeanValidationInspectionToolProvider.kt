@@ -2,11 +2,12 @@ package siosio.validation
 
 import com.intellij.codeHighlighting.*
 import com.intellij.codeInsight.*
+import com.intellij.codeInsight.daemon.impl.quickfix.*
 import com.intellij.codeInspection.*
 import com.intellij.psi.*
 
 /**
- * ドメイン名の存在チェックを行うインスペクション
+ * ドメインに関するチェック
  */
 class BeanValidationInspectionToolProvider : InspectionToolProvider {
 
@@ -15,7 +16,7 @@ class BeanValidationInspectionToolProvider : InspectionToolProvider {
 
     class InspectionTool : BaseJavaLocalInspectionTool() {
 
-        override fun getDisplayName(): String = "ドメインがDomainBeanに存在しているかチェックする"
+        override fun getDisplayName(): String = "ドメインバリデーションに関するチェック"
 
         override fun isEnabledByDefault(): Boolean = true
 
@@ -28,6 +29,16 @@ class BeanValidationInspectionToolProvider : InspectionToolProvider {
                 override fun visitField(field: PsiField?) {
                     super.visitField(field ?: return)
                     verifyDomainName(field)
+                    verifyDomain(field)
+                }
+
+                private fun verifyDomain(field: PsiField) {
+                    val module = getModule(field) ?: return
+                    if (getDomainBeanClasses(field.project, module).contains(field.containingClass ?: return)) {
+                        if (!field.hasModifierProperty("public")) {
+                            holder.registerProblem(field.nameIdentifier, "ドメインはpublicフィールドで定義してください。", ModifierFix(field, "public", true, false))
+                        }
+                    }
                 }
 
                 override fun visitMethod(method: PsiMethod?) {

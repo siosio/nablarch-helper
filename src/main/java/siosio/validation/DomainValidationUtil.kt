@@ -35,43 +35,43 @@ val REFERENCE_PATTERN = psiLiteral()
         .withChild(psiElement(PsiJavaCodeReferenceElement::class.java).withText("Domain")))!!
 
 fun getAllDomainFields(project: Project, module: Module): List<PsiField> {
-  return getDomainBeanClasses(project, module).map {
-    val method = it.findMethodsByName(FACTORY_METHOD_NAME, false)
-    method.first().returnTypeElement?.let {
-      PsiTreeUtil.findChildOfType(it, PsiTypeElement::class.java)?.let {
-        PsiTypesUtil.getPsiClass(it.type)
-      }
-    }?.let {
-      it.fields.filter {
-        !AnnotationUtil.getAllAnnotations(it, false, emptySet()).isEmpty()
-      }
-    } ?: emptyList<PsiField>()
-  }.flatten()
+    return getDomainBeanClasses(project, module).map {
+        it.fields.filter {
+            !AnnotationUtil.getAllAnnotations(it, false, emptySet()).isEmpty()
+        }
+    }.flatten().filterNotNull()
 }
 
 fun findDomainField(project: Project, module: Module, field: String): PsiField? {
-  return getAllDomainFields(project, module).firstOrNull {
-    it.name == field
-  }
+    return getAllDomainFields(project, module).firstOrNull {
+        it.name == field
+    }
 }
 
 fun getDomainBeanClasses(project: Project, module: Module): List<PsiClass> {
-  return findDomainManagerClass(project, module)?.let {
-    ClassInheritorsSearch.search(
-        it, createModuleSearchScope(module), true, true, true).toList()
-  } ?: emptyList()
+    return findDomainManagerClass(project, module)?.let {
+        ClassInheritorsSearch.search(
+            it, createModuleSearchScope(module), true, true, true).toList()
+    }?.map {
+        val method = it.findMethodsByName(FACTORY_METHOD_NAME, false)
+        method.first().returnTypeElement?.let {
+            PsiTreeUtil.findChildOfType(it, PsiTypeElement::class.java)?.let {
+                PsiTypesUtil.getPsiClass(it.type)
+            }
+        }
+    }?.filterNotNull() ?: emptyList()
 }
 
 fun getModule(element: PsiElement): Module? {
-  return ModuleUtil.findModuleForPsiElement(element)
+    return ModuleUtil.findModuleForPsiElement(element)
 }
 
 fun createModuleSearchScope(module: Module): GlobalSearchScope {
-  return GlobalSearchScope.moduleWithDependenciesAndLibrariesScope(module)
+    return GlobalSearchScope.moduleWithDependenciesAndLibrariesScope(module)
 }
 
 private fun findDomainManagerClass(project: Project, module: Module): PsiClass? {
-  val domainManager = JavaPsiFacade.getInstance(project).findClasses(
-      NABLARCH_DOMAIN_MANAGER_CLASS_NAME, createModuleSearchScope(module))
-  return domainManager.firstOrNull()
+    val domainManager = JavaPsiFacade.getInstance(project).findClasses(
+        NABLARCH_DOMAIN_MANAGER_CLASS_NAME, createModuleSearchScope(module))
+    return domainManager.firstOrNull()
 }
