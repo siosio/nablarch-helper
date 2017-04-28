@@ -5,7 +5,7 @@ import com.intellij.psi.impl.source.*
 import com.intellij.psi.impl.source.resolve.reference.impl.providers.*
 import com.intellij.psi.util.*
 import com.intellij.util.xml.*
-import isHandlerQueue
+import inHandlerQueue
 import parameterList
 import siosio.repository.*
 
@@ -17,9 +17,9 @@ class ListPsiClassConverter : RepositoryPsiClassConverter() {
         val provider = super.createClassReferenceProvider(value, context, extendClass)
 
         val domElement = DomUtil.getDomElement(value.xmlElement) ?: return provider
-        val property = domElement.getParentOfType(Property::class.java, true)
+        val propertyTag = domElement.getParentOfType(Property::class.java, true)
 
-        val parameterType = property?.let { property ->
+        val parameterType = propertyTag?.let { property ->
             property.parameterList().firstOrNull()?.type
                 ?.let { type ->
                     when (type) {
@@ -29,7 +29,7 @@ class ListPsiClassConverter : RepositoryPsiClassConverter() {
                 }
         } ?: run {
             // プロパティ配下じゃない場合は、handlerQueue定義かどうかを探す
-            if (property?.isHandlerQueue() ?: false) {
+            if (domElement.inHandlerQueue()) {
                 createHandlerInterfaceType(value.xmlElement!!.project)
             } else {
                 null

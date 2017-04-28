@@ -10,6 +10,7 @@ import com.intellij.psi.search.*
 import com.intellij.util.xml.*
 import siosio.repository.*
 import siosio.repository.extension.*
+import siosio.repository.xml.*
 
 /**
 
@@ -46,15 +47,13 @@ class PsiFileConverter : Converter<PsiFile>(), CustomReferenceConverter<PsiFile>
             context ?: return emptyArray()
 
             val directoryIndex = DirectoryIndex.getInstance(myElement.project)
-            return findNablarchXml(context)
-                .map {
-                    directoryIndex.toResourceFile(it.virtualFile)
-                }
-                .map {
-                    LookupElementBuilder.create(it)
+            return XmlHelper.findNablarchXml(context) {
+                map {
+                    LookupElementBuilder.create(directoryIndex.toResourceFile(it.virtualFile))
                         .withIcon(IconLoader.getIcon("/nablarch.png"))
                         .withAutoCompletionPolicy(AutoCompletionPolicy.ALWAYS_AUTOCOMPLETE)
                 }.toList().toTypedArray()
+            } ?: emptyArray()
         }
 
         override fun resolve(): PsiElement? {

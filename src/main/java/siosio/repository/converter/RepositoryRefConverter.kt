@@ -6,6 +6,7 @@ import com.intellij.psi.util.*
 import com.intellij.psi.xml.*
 import com.intellij.util.xml.*
 import siosio.repository.*
+import siosio.repository.xml.*
 
 /**
  * propertyタグのref属性のコンポーネントを解決するコンバータ
@@ -32,7 +33,7 @@ class RepositoryRefConverter : ResolvingConverter<XmlTag>() {
 
   override fun fromString(name: String?, context: ConvertContext?): XmlTag? {
     // todo 複数あるのか(´・ω・`)
-    return findNamedElement(context).lastOrNull {
+    return XmlHelper.findNamedElement(context).lastOrNull {
       it.name.value == name
     }?.xmlTag
   }
@@ -44,7 +45,7 @@ class RepositoryRefConverter : ResolvingConverter<XmlTag>() {
   class ComponentCreator(private val xmlAttributeValue: XmlAttributeValue) {
 
     fun findAll(context: ConvertContext): Array<NamedElementHolder> {
-      val namedElements = findNamedElement(context)
+      val namedElements = XmlHelper.findNamedElement(context)
           .filterIsInstance(Component::class.java)
           .map { component ->
             component.componentClass.value?.let {
@@ -61,7 +62,7 @@ class RepositoryRefConverter : ResolvingConverter<XmlTag>() {
         null
       }?.let { type ->
         namedElements.asSequence().filter {
-          isAssignableFrom(type, it.componentType)
+          XmlHelper.isAssignableFrom(type, it.componentType)
         }.toList().toTypedArray()
       } ?: emptyArray()
     }
@@ -70,11 +71,7 @@ class RepositoryRefConverter : ResolvingConverter<XmlTag>() {
         val component: Component,
         val componentClass: PsiClass
     ) {
-      val componentType: PsiClassType
-
-      init {
-        componentType = PsiTypesUtil.getClassType(componentClass)
-      }
+      val componentType: PsiClassType = PsiTypesUtil.getClassType(componentClass)
     }
   }
 }
