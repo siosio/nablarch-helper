@@ -8,7 +8,6 @@ import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.util.xml.*
-import siosio.repository.*
 import siosio.repository.extension.*
 import siosio.repository.xml.*
 

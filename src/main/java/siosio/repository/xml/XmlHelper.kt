@@ -62,17 +62,13 @@ object XmlHelper {
             .map {
                 PsiManager.getInstance(context.project).findFile(it)
             }
-            .filter {
-                when (it) {
-                    is XmlFile -> {
-                        DomUtil.getDomElement(it.rootTag) is ComponentDefinition
-                    }
-                    else -> false
-                }
-            }
             .mapNotNull {
                 when (it) {
-                    is XmlFile -> it
+                    is XmlFile -> if (DomUtil.getDomElement(it.rootTag) is ComponentDefinition) {
+                        it
+                    } else {
+                        null
+                    }
                     else -> null
                 }
             }.block()
