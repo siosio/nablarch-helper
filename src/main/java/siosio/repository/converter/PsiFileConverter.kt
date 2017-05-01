@@ -3,11 +3,11 @@ package siosio.repository.converter
 import com.intellij.codeInsight.lookup.*
 import com.intellij.openapi.module.*
 import com.intellij.openapi.roots.impl.*
-import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.util.xml.*
+import siosio.*
 import siosio.repository.extension.*
 import siosio.repository.xml.*
 
@@ -46,10 +46,10 @@ class PsiFileConverter : Converter<PsiFile>(), CustomReferenceConverter<PsiFile>
             context ?: return emptyArray()
 
             val directoryIndex = DirectoryIndex.getInstance(myElement.project)
-            return XmlHelper.findNablarchXml(context) {
+            return XmlHelper.findNablarchXml(myElement) {
                 map {
                     LookupElementBuilder.create(directoryIndex.toResourceFile(it.virtualFile))
-                        .withIcon(IconLoader.getIcon("/nablarch.png"))
+                        .withIcon(nablarchIcon)
                         .withAutoCompletionPolicy(AutoCompletionPolicy.ALWAYS_AUTOCOMPLETE)
                 }.toList().toTypedArray()
             } ?: emptyArray()

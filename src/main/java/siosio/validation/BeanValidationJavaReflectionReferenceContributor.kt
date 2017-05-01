@@ -15,7 +15,7 @@ class BeanValidationJavaReflectionReferenceContributor : PsiReferenceContributor
 
     class DomainReferenceProvider : PsiReferenceProvider() {
         override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<out PsiReference> {
-            return arrayOf(MyReference(element as PsiLiteralExpression))
+            return arrayOf(MyReference(element))
         }
     }
 
