@@ -8,3 +8,5 @@ fun PsiFile.inTestScope(module: Module): Boolean {
     return !GlobalSearchScope.moduleRuntimeScope(module, false).contains(this.originalFile.virtualFile)
 }
 
+fun PsiElement.getSimpleText() = this.text.trimStart('"').trimEnd('"')
+

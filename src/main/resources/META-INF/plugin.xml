@@ -31,8 +31,4 @@
     
     <psi.referenceContributor order="first" language="JAVA" implementation="siosio.repository.SystemRepositoryReferenceContributor" />
   </extensions>
-
-  <actions>
-  </actions>
-
 </idea-plugin>

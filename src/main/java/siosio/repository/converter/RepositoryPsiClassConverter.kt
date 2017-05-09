@@ -7,7 +7,7 @@ import com.intellij.util.xml.*
 import siosio.repository.extension.*
 
 /**
- * class属性か[PsiClass]に変換するクラス
+ * class属性を[PsiClass]に変換するクラス
  */
 open class RepositoryPsiClassConverter : PsiClassConverter() {
 

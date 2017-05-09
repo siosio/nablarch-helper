@@ -9,6 +9,7 @@ import com.intellij.util.xml.*
 import inHandlerQueue
 import parameterList
 import siosio.repository.*
+import siosio.repository.psi.*
 import siosio.repository.xml.*
 
 class RepositoryListRefConverter : Converter<XmlTag>(), CustomReferenceConverter<XmlTag> {
@@ -16,11 +17,7 @@ class RepositoryListRefConverter : Converter<XmlTag>(), CustomReferenceConverter
     override fun createReferences(component: GenericDomValue<XmlTag>?,
                                   element: PsiElement?,
                                   context: ConvertContext?): Array<out PsiReference> {
-        return if (component?.stringValue.isNullOrEmpty()) {
-            emptyArray()
-        } else {
-            arrayOf(ListComponentRefReference(element!!, component, context))
-        }
+        return arrayOf(ListComponentRefReference(element!!, context))
     }
 
     override fun toString(component: XmlTag?, context: ConvertContext?): String? {
@@ -36,9 +33,7 @@ class RepositoryListRefConverter : Converter<XmlTag>(), CustomReferenceConverter
 }
 
 class ListComponentRefReference(psiElement: PsiElement,
-                                val component: GenericDomValue<XmlTag>?,
-                                private val context: ConvertContext?) :
-    PsiReferenceBase<PsiElement>(psiElement) {
+                                private val context: ConvertContext?) : ComponentReference(psiElement) {
 
     override fun getVariants(): Array<out Any> {
         if (element !is XmlAttributeValue) {
@@ -66,7 +61,7 @@ class ListComponentRefReference(psiElement: PsiElement,
             } else if (propertyTag != null) {
                 val type = propertyTag.parameterList().firstOrNull()?.type
                 when (type) {
-                    // todo ちょっとここ雑かな。。
+                // todo ちょっとここ雑かな。。
                     is PsiClassReferenceType -> type.parameters.firstOrNull()
                     else -> null
                 }
@@ -80,12 +75,9 @@ class ListComponentRefReference(psiElement: PsiElement,
                 LookupElementBuilder
                     .create(it.first.xmlTag, it.first.name.value!!)
                     .withIcon(it.third.getIcon(0))
+                    .withTailText(it.first.xmlTag.containingFile.name, true)
                     .withTypeText(it.first.xmlTag.containingFile.name, true)
             }.toList().toTypedArray()
         } ?: emptyArray()
-    }
-
-    override fun resolve(): PsiElement? {
-        return component?.value
     }
 }

@@ -7,6 +7,7 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
 import siosio.*
+import siosio.repository.psi.*
 import siosio.repository.xml.*
 
 class SystemRepositoryReferenceContributor : PsiReferenceContributor() {
@@ -21,14 +22,11 @@ class SystemRepositoryReferenceContributor : PsiReferenceContributor() {
 
     private inner class SystemRepositoryReferenceProvider : PsiReferenceProvider() {
 
-        override fun getReferencesByElement(element: PsiElement,
-                                            context: ProcessingContext): Array<PsiReference> {
-            return arrayOf(MyReference(element))
-
-        }
+        override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<PsiReference>
+            = arrayOf(MyReference(element))
     }
 
-    class MyReference(name: PsiElement) : PsiReferenceBase<PsiElement>(name) {
+    class MyReference(element: PsiElement) : ComponentReference(element) {
 
         override fun getVariants(): Array<out Any> {
             val type = PsiTreeUtil.getParentOfType(myElement, PsiDeclarationStatement::class.java)?.let {
@@ -39,31 +37,29 @@ class SystemRepositoryReferenceContributor : PsiReferenceContributor() {
                     it.name.value?.isNotBlank() ?: false
                 }
                 .filter {
-                    when (it) {
-                        is Component ->
-                            if (type != null) {
+                    if (type == null) {
+                        true
+                    } else {
+                        when (it) {
+                            is Component ->
                                 it.componentClass.value?.let {
                                     XmlHelper.isAssignableFrom(type, PsiTypesUtil.getClassType(it))
                                 } ?: false
-                            } else {
-                                true
+                            is ListObject -> {
+                                "java.util.List" in type.canonicalText
                             }
-                        is ListComponent -> false
-                        else -> false
+                            else -> false
+                        }
                     }
                 }
                 .map {
-                    LookupElementBuilder.create(it, it.name.value!!)
+
+                    val xmlTag = it.xmlTag
+                    LookupElementBuilder.create(xmlTag, xmlTag.getAttributeValue("name")!!)
                         .withIcon(nablarchIcon)
+                        .withTypeText(xmlTag.containingFile.name, true)
                         .withAutoCompletionPolicy(AutoCompletionPolicy.ALWAYS_AUTOCOMPLETE)
                 }.toTypedArray()
-        }
-
-        override fun resolve(): PsiElement? {
-            return XmlHelper.findNamedElement(myElement)
-                .firstOrNull {
-                    it.name.value == myElement.text.trimStart('"').trimEnd('"')
-                }?.xmlElement
         }
     }
 }
