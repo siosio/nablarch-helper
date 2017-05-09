@@ -26,39 +26,55 @@ class SystemRepositoryReferenceContributor : PsiReferenceContributor() {
     }
 
     class MyReference(element: PsiElement) : ComponentReference(element) {
+        companion object {
+            private val listPattern = PsiJavaPatterns.psiClass().withQualifiedName("java.util.List")
+        }
 
         override fun getVariants(): Array<out Any> {
             val type = PsiTreeUtil.getParentOfType(myElement, PsiDeclarationStatement::class.java)?.let {
                 PsiTreeUtil.getChildOfType(it, PsiLocalVariable::class.java)?.type
             }
+
+            val filter = createFilter(type)
             return XmlHelper.findNamedElement(myElement)
                     .filter {
                         it.name.value?.isNotBlank() ?: false
                     }
-                    .filter {
-                        if (type == null) {
-                            true
-                        } else {
-                            when (it) {
-                                is Component ->
-                                    it.componentClass.value?.let {
-                                        XmlHelper.isAssignableFrom(type, PsiTypesUtil.getClassType(it))
-                                    } ?: false
-                                is ListObject -> {
-                                    "java.util.List" in type.canonicalText
-                                }
-                                else -> false
-                            }
-                        }
-                    }
+                    .filter(filter)
                     .map {
-
                         val xmlTag = it.xmlTag
                         LookupElementBuilder.create(xmlTag, xmlTag.getAttributeValue("name")!!)
                                 .withIcon(nablarchIcon)
                                 .withTypeText(xmlTag.containingFile.name, true)
                                 .withAutoCompletionPolicy(AutoCompletionPolicy.ALWAYS_AUTOCOMPLETE)
                     }.toTypedArray()
+        }
+
+        /**
+         * 候補に表示する要素を絞り込むフィルターを作る
+         */
+        fun createFilter(type: PsiType?): (NamedElement) -> Boolean {
+            val alwaysTrue = fun(dom: NamedElement) = true
+            val objectFilter = fun(dom: NamedElement): Boolean {
+                return if (dom is Component) {
+                    dom.componentClass.value?.let {
+                        XmlHelper.isAssignableFrom(type!!, PsiTypesUtil.getClassType(it))
+                    } ?: false
+                } else {
+                    false
+                }
+            }
+            val listFilter = fun(dom: NamedElement): Boolean = dom is ListObject
+
+            return if (type == null) {
+                alwaysTrue
+            } else {
+                if (listPattern.accepts(PsiTypesUtil.getPsiClass(type))) {
+                    listFilter
+                } else {
+                    objectFilter
+                }
+            }
         }
     }
 }
