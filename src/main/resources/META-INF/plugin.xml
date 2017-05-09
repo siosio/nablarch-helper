@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>siosio.nablarch-helper</id>
   <name>nablarch helper</name>
-  <version>0.8</version>
+  <version>0.9</version>
   <vendor email="siosio12@gmail.com">siosio</vendor>
 
   <description><![CDATA[
