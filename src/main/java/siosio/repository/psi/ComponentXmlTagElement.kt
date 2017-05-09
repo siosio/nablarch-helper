@@ -25,5 +25,7 @@ class ComponentXmlTagElement(private val xmlTag: XmlTag) : XmlTag by xmlTag, Nav
     override fun navigate(requestFocus: Boolean) {
         PsiNavigationSupport.getInstance().getDescriptor(this)?.navigate(requestFocus)
     }
+
+    override fun getIcon(flags: Int): Icon = nablarchIcon
 }
 
