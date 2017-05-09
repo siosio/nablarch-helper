@@ -14,16 +14,15 @@ class SystemRepositoryReferenceContributor : PsiReferenceContributor() {
 
     override fun registerReferenceProviders(registrar: PsiReferenceRegistrar) {
         registrar.registerReferenceProvider(PsiJavaPatterns.psiLiteral()
-            .withSuperParent(2, psiElement(PsiMethodCallExpression::class.java)
-                .withFirstChild(psiElement(PsiReferenceExpression::class.java)
-                    .withText(StandardPatterns.string().endsWith("SystemRepository.get")))
-            ), SystemRepositoryReferenceProvider())
+                .withSuperParent(2, psiExpression().methodCall(
+                        psiMethod().withName("get")
+                                .definedInClass("nablarch.core.repository.SystemRepository"))),
+                SystemRepositoryReferenceProvider())
     }
 
     private inner class SystemRepositoryReferenceProvider : PsiReferenceProvider() {
-
         override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<PsiReference>
-            = arrayOf(MyReference(element))
+                = arrayOf(MyReference(element))
     }
 
     class MyReference(element: PsiElement) : ComponentReference(element) {
@@ -33,33 +32,33 @@ class SystemRepositoryReferenceContributor : PsiReferenceContributor() {
                 PsiTreeUtil.getChildOfType(it, PsiLocalVariable::class.java)?.type
             }
             return XmlHelper.findNamedElement(myElement)
-                .filter {
-                    it.name.value?.isNotBlank() ?: false
-                }
-                .filter {
-                    if (type == null) {
-                        true
-                    } else {
-                        when (it) {
-                            is Component ->
-                                it.componentClass.value?.let {
-                                    XmlHelper.isAssignableFrom(type, PsiTypesUtil.getClassType(it))
-                                } ?: false
-                            is ListObject -> {
-                                "java.util.List" in type.canonicalText
+                    .filter {
+                        it.name.value?.isNotBlank() ?: false
+                    }
+                    .filter {
+                        if (type == null) {
+                            true
+                        } else {
+                            when (it) {
+                                is Component ->
+                                    it.componentClass.value?.let {
+                                        XmlHelper.isAssignableFrom(type, PsiTypesUtil.getClassType(it))
+                                    } ?: false
+                                is ListObject -> {
+                                    "java.util.List" in type.canonicalText
+                                }
+                                else -> false
                             }
-                            else -> false
                         }
                     }
-                }
-                .map {
+                    .map {
 
-                    val xmlTag = it.xmlTag
-                    LookupElementBuilder.create(xmlTag, xmlTag.getAttributeValue("name")!!)
-                        .withIcon(nablarchIcon)
-                        .withTypeText(xmlTag.containingFile.name, true)
-                        .withAutoCompletionPolicy(AutoCompletionPolicy.ALWAYS_AUTOCOMPLETE)
-                }.toTypedArray()
+                        val xmlTag = it.xmlTag
+                        LookupElementBuilder.create(xmlTag, xmlTag.getAttributeValue("name")!!)
+                                .withIcon(nablarchIcon)
+                                .withTypeText(xmlTag.containingFile.name, true)
+                                .withAutoCompletionPolicy(AutoCompletionPolicy.ALWAYS_AUTOCOMPLETE)
+                    }.toTypedArray()
         }
     }
 }
