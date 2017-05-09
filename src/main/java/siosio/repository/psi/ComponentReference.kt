@@ -11,7 +11,7 @@ abstract class ComponentReference(element: PsiElement) : PsiReferenceBase<PsiEle
                 it.name.value == myElement.getSimpleText()
             }
             .map {
-                PsiElementResolveResult(ComponentXmlTagElement(it.xmlTag), false)
+                PsiElementResolveResult(ComponentXmlTagElement(it.xmlTag))
             }.toTypedArray()
     }
 
