@@ -1,4 +1,4 @@
-package siosio.repository;
+package siosio.repository.xml;
 
 import java.util.List;
 

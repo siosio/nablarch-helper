@@ -6,7 +6,6 @@ import com.intellij.psi.search.*
 import com.intellij.psi.xml.*
 import com.intellij.util.xml.*
 import siosio.extension.*
-import siosio.repository.*
 import siosio.repository.extension.*
 
 object XmlHelper {

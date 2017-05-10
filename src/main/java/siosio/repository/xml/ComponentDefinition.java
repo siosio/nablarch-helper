@@ -1,11 +1,10 @@
-package siosio.repository;
+package siosio.repository.xml;
 
 import java.util.List;
 
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.SubTagList;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * ルート要素

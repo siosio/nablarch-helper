@@ -8,6 +8,7 @@ import com.intellij.psi.xml.*
 import com.intellij.util.xml.*
 import inHandlerQueue
 import parameterList
+import siosio.*
 import siosio.repository.*
 import siosio.repository.psi.*
 import siosio.repository.xml.*
@@ -74,9 +75,9 @@ class ListComponentRefReference(psiElement: PsiElement,
             }.map {
                 LookupElementBuilder
                     .create(it.first.xmlTag, it.first.name.value!!)
-                    .withIcon(it.third.getIcon(0))
-                    .withTailText(it.first.xmlTag.containingFile.name, true)
+                    .withIcon(nablarchIcon)
                     .withTypeText(it.first.xmlTag.containingFile.name, true)
+                    .withAutoCompletionPolicy(AutoCompletionPolicy.ALWAYS_AUTOCOMPLETE)
             }.toList().toTypedArray()
         } ?: emptyArray()
     }

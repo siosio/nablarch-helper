@@ -1,4 +1,4 @@
-package siosio.repository;
+package siosio.repository.xml;
 
 import com.intellij.psi.PsiFile;
 import com.intellij.util.xml.Convert;

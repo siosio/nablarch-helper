@@ -26,7 +26,7 @@
     <inspectionToolProvider implementation="siosio.validation.BeanValidationInspectionToolProvider" order="first"/>
 
     <!-- SystemRepository -->
-    <dom.fileDescription implementation="siosio.repository.ComponentDefinitionDomDescription" />
+    <dom.fileDescription implementation="siosio.repository.xml.ComponentDefinitionDomDescription" />
     <inspectionToolProvider implementation="siosio.repository.inspection.ComponentDefinitionInspectionToolProvider" />
     
     <psi.referenceContributor order="first" language="JAVA" implementation="siosio.repository.SystemRepositoryReferenceContributor" />

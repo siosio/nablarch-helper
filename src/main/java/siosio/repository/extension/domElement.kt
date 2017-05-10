@@ -1,6 +1,6 @@
 import com.intellij.psi.*
 import com.intellij.util.xml.*
-import siosio.repository.*
+import siosio.repository.xml.*
 
 fun DomElement.inHandlerQueue(): Boolean {
     val list = getParentOfType(ListObject::class.java, true)

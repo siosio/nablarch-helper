@@ -5,7 +5,7 @@ import com.intellij.psi.impl.source.resolve.reference.impl.providers.*
 import com.intellij.psi.util.*
 import com.intellij.util.xml.*
 import parameterList
-import siosio.repository.*
+import siosio.repository.xml.*
 
 class PropertyPsiClassConverter : RepositoryPsiClassConverter() {
 

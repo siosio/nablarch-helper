@@ -5,7 +5,6 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.psi.xml.*
 import com.intellij.util.xml.*
-import siosio.repository.*
 import siosio.repository.xml.*
 
 /**

@@ -8,6 +8,7 @@ import com.intellij.util.xml.*
 import inHandlerQueue
 import parameterList
 import siosio.repository.*
+import siosio.repository.xml.*
 
 class ListPsiClassConverter : RepositoryPsiClassConverter() {
 

@@ -2,7 +2,7 @@ package siosio.repository.inspection
 
 import com.intellij.util.xml.*
 import com.intellij.util.xml.highlighting.*
-import siosio.repository.*
+import siosio.repository.xml.*
 
 /**
  * dom構造をチェックするクラス。
