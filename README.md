@@ -12,7 +12,7 @@ Quick Definitionを使うことでドメインの定義を参照することが�
 
 # リポジトリXMLのサポート
 コンポーネント定義時のref属性に設定可能なコンポーネント一覧をリスト表示できます。
-！[](doc/repository-ref.png)
+![](doc/repository-ref.png)
 
 
 
