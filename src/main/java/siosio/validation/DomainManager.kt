@@ -38,16 +38,19 @@ object DomainManager {
                        domainName: String): Boolean = findDomainField(project, module, domainName) != null
 
     fun getDomainBeanClasses(project: Project, module: Module): List<PsiClass> {
+        if (project.isDisposed) {
+            return emptyList()
+        }
         return findDomainManagerClass(project, module)?.let {
-            ClassInheritorsSearch.search(
-                it, module.getModuleWithDependenciesAndLibrariesScope(false), true, true, true).toList()
-        }?.map {
-            val method = it.findMethodsByName("getDomainBean", false)
-            method.first().returnTypeElement?.let {
-                PsiTreeUtil.findChildOfType(it, PsiTypeElement::class.java)?.let {
-                    PsiTypesUtil.getPsiClass(it.type)
-                }
-            }
-        }?.filterNotNull() ?: emptyList()
+            ClassInheritorsSearch.search(it, module.getModuleWithDependenciesAndLibrariesScope(false), true, true, true).toList()
+                .map {
+                    val method = it.findMethodsByName("getDomainBean", false)
+                    method.first().returnTypeElement?.let {
+                        PsiTreeUtil.findChildOfType(it, PsiTypeElement::class.java)?.let {
+                            PsiTypesUtil.getPsiClass(it.type)
+                        }
+                    }
+                }.filterNotNull()
+        } ?: emptyList()
     }
 }
