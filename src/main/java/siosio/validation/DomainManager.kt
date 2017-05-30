@@ -38,7 +38,7 @@ object DomainManager {
                        domainName: String): Boolean = findDomainField(project, module, domainName) != null
 
     fun getDomainBeanClasses(project: Project, module: Module): List<PsiClass> {
-        if (project.isDisposed) {
+        if (project.isDisposed || module.isDisposed || !project.isOpen) {
             return emptyList()
         }
         return findDomainManagerClass(project, module)?.let {

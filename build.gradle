@@ -3,7 +3,7 @@ buildscript {
     maven { url 'http://dl.bintray.com/jetbrains/intellij-plugin-service' }
   }
   dependencies {
-    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.1.1"
+    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.1.2-4"
   }
 }
 
@@ -33,7 +33,7 @@ repositories {
 }
 
 dependencies {
-  compile "org.jetbrains.kotlin:kotlin-stdlib:1.1.1"
+  compile "org.jetbrains.kotlin:kotlin-stdlib:1.1.2-4"
 }
 
 task wrapper(type: Wrapper) {
