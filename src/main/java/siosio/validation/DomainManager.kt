@@ -8,17 +8,10 @@ import com.intellij.psi.util.*
 
 object DomainManager {
 
-    private var domainManagerClass: PsiClass? = null
-
     private fun findDomainManagerClass(project: Project, module: Module): PsiClass? {
-        return if (domainManagerClass == null) {
-            val domainManager = JavaPsiFacade.getInstance(project).findClasses(
+        val domainManager = JavaPsiFacade.getInstance(project).findClasses(
                 "nablarch.core.validation.ee.DomainManager", module.getModuleWithDependenciesAndLibrariesScope(false))
-            domainManagerClass = domainManager.firstOrNull()
-            domainManagerClass
-        } else {
-            domainManagerClass
-        }
+        return domainManager.firstOrNull()
     }
 
     fun getAllDomainFields(project: Project, module: Module): List<PsiField> {
@@ -43,14 +36,14 @@ object DomainManager {
         }
         return findDomainManagerClass(project, module)?.let {
             ClassInheritorsSearch.search(it, module.getModuleWithDependenciesAndLibrariesScope(false), true, true, true).toList()
-                .map {
-                    val method = it.findMethodsByName("getDomainBean", false)
-                    method.first().returnTypeElement?.let {
-                        PsiTreeUtil.findChildOfType(it, PsiTypeElement::class.java)?.let {
-                            PsiTypesUtil.getPsiClass(it.type)
+                    .map {
+                        val method = it.findMethodsByName("getDomainBean", false)
+                        method.first().returnTypeElement?.let {
+                            PsiTreeUtil.findChildOfType(it, PsiTypeElement::class.java)?.let {
+                                PsiTypesUtil.getPsiClass(it.type)
+                            }
                         }
-                    }
-                }.filterNotNull()
+                    }.filterNotNull()
         } ?: emptyList()
     }
 }
