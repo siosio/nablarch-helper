@@ -54,7 +54,7 @@ class SystemRepositoryReferenceContributor : PsiReferenceContributor() {
          * 候補に表示する要素を絞り込むフィルターを作る
          */
         fun createFilter(type: PsiType?): (NamedElement) -> Boolean {
-            val alwaysTrue = fun(dom: NamedElement) = true
+            val alwaysTrue = fun(_: NamedElement) = true
             val objectFilter = fun(dom: NamedElement): Boolean {
                 return if (dom is Component) {
                     dom.componentClass.value?.let {
