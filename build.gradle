@@ -1,9 +1,10 @@
 buildscript {
+  ext.kotlinVersion = "1.1.4-2"
   repositories {
     maven { url 'http://dl.bintray.com/jetbrains/intellij-plugin-service' }
   }
   dependencies {
-    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.1.2-4"
+    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}"
   }
 }
 
@@ -16,8 +17,7 @@ apply plugin: "kotlin"
 
 intellij {
   pluginName 'nablarch-helper'
-  version = "IU-2017.1"
-  plugins = ['DatabaseTools']
+  version = "IU-2017.2.2"
   updateSinceUntilBuild = false
 }
 
@@ -32,8 +32,10 @@ repositories {
   mavenCentral()
 }
 
+compileKotlin.destinationDir = compileJava.destinationDir
+
 dependencies {
-  compile "org.jetbrains.kotlin:kotlin-stdlib:1.1.2-4"
+  compile "org.jetbrains.kotlin:kotlin-stdlib:${kotlinVersion}"
 }
 
 task wrapper(type: Wrapper) {

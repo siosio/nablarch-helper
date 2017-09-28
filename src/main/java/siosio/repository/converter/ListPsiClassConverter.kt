@@ -40,8 +40,8 @@ class ListPsiClassConverter : RepositoryPsiClassConverter() {
         when (parameterType) {
             is PsiWildcardType -> PsiTypesUtil.getPsiClass(parameterType.bound)
             else -> PsiTypesUtil.getPsiClass(parameterType)
-        }?.let { parameterType ->
-            provider.setOption(JavaClassReferenceProvider.EXTEND_CLASS_NAMES, arrayOf(parameterType.qualifiedName))
+        }?.let { 
+            provider.setOption(JavaClassReferenceProvider.EXTEND_CLASS_NAMES, arrayOf(it.qualifiedName))
         }
         return provider
     }
