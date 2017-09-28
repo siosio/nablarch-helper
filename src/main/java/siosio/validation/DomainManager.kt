@@ -40,8 +40,7 @@ object DomainManager {
         if (project.isDisposed || module.isDisposed || !project.isOpen) {
             return emptyList()
         }
-        return cache.getOrPut(module) {
-            findDomainManagerClass(project, module)?.let {
+        return findDomainManagerClass(project, module)?.let {
                 ClassInheritorsSearch.search(it, module.getModuleWithDependenciesAndLibrariesScope(false), true, true, true)
                     .toList()
                     .mapNotNull {
@@ -55,6 +54,5 @@ object DomainManager {
                         }
                     }
             } ?: emptyList()
-        }
     }
 }
